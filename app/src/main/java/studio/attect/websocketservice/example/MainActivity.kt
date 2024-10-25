@@ -1,5 +1,10 @@
 package studio.attect.websocketservice.example
 
+import java.util.zip.Inflater
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import java.io.ByteArrayOutputStream
+import java.nio.charset.StandardCharsets
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -256,7 +261,59 @@ class MainActivity : StaticViewModelLifecycleActivity() {
             ""
         }
     }
+fun decompressAndParseHex(hexData: String): String {
+    val byteData = hexStringToByteArray(hexData)
 
+    for (headerLength in 2..15) {
+        val dataStartPos = headerLength
+        val dataToDecompress = byteData.copyOfRange(dataStartPos, byteData.size)
+
+        try {
+            val decompressedData = decompress(dataToDecompress)
+            val jsonData = String(decompressedData, StandardCharsets.UTF_8)
+
+            val objectMapper = jacksonObjectMapper()
+            return try {
+                val parsedData: Any = objectMapper.readValue(jsonData)
+                objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedData)
+            } catch (e: Exception) {
+                "JSON 解码错误: ${e.message}\n原始数据: $jsonData"
+            }
+
+        } catch (e: Exception) {
+            // 继续尝试下一个头部长度
+        }
+    }
+
+    return "没有找到有效的解压缩数据。"
+}
+
+fun hexStringToByteArray(s: String): ByteArray {
+    val len = s.length
+    val data = ByteArray(len / 2)
+    for (i in 0 until len step 2) {
+        data[i / 2] = ((Character.digit(s[i], 16) shl 4) + Character.digit(s[i + 1], 16)).toByte()
+    }
+    return data
+}
+
+fun decompress(data: ByteArray): ByteArray {
+    val inflater = Inflater()
+    inflater.setInput(data)
+    val outputStream = ByteArrayOutputStream(data.size)
+
+    return try {
+        val buffer = ByteArray(1024)
+        while (!inflater.finished()) {
+            val size = inflater.inflate(buffer)
+            outputStream.write(buffer, 0, size)
+        }
+        outputStream.toByteArray()
+    } finally {
+        inflater.end()
+        outputStream.close()
+    }
+}
     /**
      * 获得系统通知服务管理者
      * 需要通过它来与系统通知功能进行操作
@@ -369,8 +426,15 @@ class MainActivity : StaticViewModelLifecycleActivity() {
             time?.text = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date(data.time))
             if (data.hex) {
                 data.byteContent?.let {
-                    content?.text = it.toHexString()
+                    val hexString = it.toHexString()
+                    
+                    // 调用解压缩和解析 JSON 函数
+                    val result = decompressAndParseHex(hexString)
+
+                    // 更新内容和类型文本
+                    content?.text = hexString
                     type?.text = String.format(getString(R.string.type_hex_size), it.size)
+
                 }
 
             } else {
