@@ -27,6 +27,9 @@ android {
 }
 
 dependencies {
+implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.15.0' // 使用最新版本
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0' // 必要的核心模块
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "androidx.appcompat:appcompat:${appcompat_version}"
