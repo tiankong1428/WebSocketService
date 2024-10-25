@@ -1,9 +1,11 @@
 package studio.attect.websocketservice.example
 
+import androidx.multidex.MultiDexApplication
+
 import android.app.Application
 import studio.attect.staticviewmodelstore.StaticViewModelStore
 
-class MyApplication : Application() {
+class MyApplication : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
