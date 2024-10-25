@@ -28,6 +28,8 @@ multiDexEnabled true
 }
 
 dependencies {
+    implementation 'androidx.multidex:multidex:2.0.1' // 适用于 AndroidX
+
 implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0' // 选择较低的版本
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0' // 对应的模块
 
