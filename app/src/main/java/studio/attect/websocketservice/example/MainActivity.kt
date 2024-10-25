@@ -279,7 +279,7 @@ class MainActivity : StaticViewModelLifecycleActivity() {
         }
 
         val backToMainActivityPendingIntent =
-            PendingIntent.getActivity(this, 0, backToMainActivityIntent, 0)
+            PendingIntent.getActivity(this, 0, backToMainActivityIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val notification = NotificationCompat.Builder(this, channel).apply {
             setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
