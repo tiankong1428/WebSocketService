@@ -58,7 +58,7 @@ class MainActivity : StaticViewModelLifecycleActivity() {
             (view as AppCompatTextView).let { textView ->
                 if (webSocketViewModel.status.value != WebSocketStatus.CONNECTED) {
                     addressEditText.text?.toString()?.let { url ->
-                        textView.enableClickCopy()
+                        textView.disableClick()
                         addressEditText.isEnabled = false
                         notificationCheckBox.isEnabled = false
                         val handshakeHeader = WebSocketHandshakeHeader("client", "WebSocketService")
