@@ -58,8 +58,7 @@ class MainActivity : StaticViewModelLifecycleActivity() {
             (view as AppCompatTextView).let { textView ->
                 if (webSocketViewModel.status.value != WebSocketStatus.CONNECTED) {
                     addressEditText.text?.toString()?.let { url ->
-                        textView.disableClick()
-                        textview.enableLongClickCopy()
+                        textview.enableClickCopy()
                         addressEditText.isEnabled = false
                         notificationCheckBox.isEnabled = false
                         val handshakeHeader = WebSocketHandshakeHeader("client", "WebSocketService")
@@ -173,4 +172,4 @@ class MainActivity : StaticViewModelLifecycleActivity() {
                     }
                     WebSocketStatus.RECONNECTING -> {
                         actionButton.disableClick()
-           
+                        actionButton.setText(R.string.retrying)
