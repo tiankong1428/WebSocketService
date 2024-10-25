@@ -7,6 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 31
     defaultConfig {
+multiDexEnabled true  
         applicationId 'studio.attect.websocketservice.example'
         minSdkVersion 19
         targetSdkVersion 31
